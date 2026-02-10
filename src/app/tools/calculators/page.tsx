@@ -1,27 +1,5 @@
 import SectionCard from "@/components/SectionCard";
-
-const calculators = [
-  {
-    title: "Plate Weight",
-    description: "Estimate weight from plate dimensions and density.",
-    href: "/tools/plate-weight"
-  },
-  {
-    title: "Machining Cycle Estimator",
-    description: "Estimate spindle time, feeds, and tool changes.",
-    href: "#"
-  },
-  {
-    title: "Sheet Metal Costing",
-    description: "Project material usage, scrap rate, and setup time.",
-    href: "#"
-  },
-  {
-    title: "Assembly Labor Planner",
-    description: "Balance takt time against line staffing requirements.",
-    href: "#"
-  }
-];
+import { calculators } from "@/lib/calculators/catalog";
 
 export default function CalculatorsPage() {
   return (
