@@ -1,19 +1,5 @@
 import SectionCard from "@/components/SectionCard";
-
-const calculators = [
-  {
-    title: "Machining Cycle Estimator",
-    description: "Estimate spindle time, feeds, and tool changes."
-  },
-  {
-    title: "Sheet Metal Costing",
-    description: "Project material usage, scrap rate, and setup time."
-  },
-  {
-    title: "Assembly Labor Planner",
-    description: "Balance takt time against line staffing requirements."
-  }
-];
+import { calculators } from "@/lib/calculators/catalog";
 
 export default function CalculatorsPage() {
   return (
@@ -39,7 +25,7 @@ export default function CalculatorsPage() {
             key={item.title}
             title={item.title}
             description={item.description}
-            href="#"
+            href={item.href}
           />
         ))}
       </section>
