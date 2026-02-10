@@ -15,15 +15,3 @@ export function calculatePlateWeightKg({
     (lengthMm / 1000) * (widthMm / 1000) * (thicknessMm / 1000);
   return volumeM3 * densityKgM3;
 }
-
-export {
-  calculateRoundBarKgPerMeter,
-  calculateRoundBarWeightKg,
-  type RoundBarWeightInputs
-} from "./roundBar";
-
-export {
-  calculatePipeKgPerMeter,
-  calculatePipeWeightKg,
-  type PipeWeightInputs
-} from "./pipe";
