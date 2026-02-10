@@ -18,14 +18,17 @@ export type PipeWeightInputs = {
   densityKgM3: number;
 };
 
+function mmToM(valueMm: number): number {
+  return valueMm / 1000;
+}
+
 export function calculatePlateWeightKg({
   lengthMm,
   widthMm,
   thicknessMm,
   densityKgM3
 }: PlateWeightInputs): number {
-  const volumeM3 =
-    (lengthMm / 1000) * (widthMm / 1000) * (thicknessMm / 1000);
+  const volumeM3 = mmToM(lengthMm) * mmToM(widthMm) * mmToM(thicknessMm);
   return volumeM3 * densityKgM3;
 }
 
@@ -34,8 +37,8 @@ export function calculateRoundBarWeightKg({
   lengthMm,
   densityKgM3
 }: RoundBarWeightInputs): number {
-  const radiusM = (diameterMm / 1000) / 2;
-  const lengthM = lengthMm / 1000;
+  const radiusM = mmToM(diameterMm) / 2;
+  const lengthM = mmToM(lengthMm);
   const volumeM3 = Math.PI * radiusM * radiusM * lengthM;
 
   return volumeM3 * densityKgM3;
@@ -58,9 +61,9 @@ export function calculatePipeWeightKg({
   lengthMm,
   densityKgM3
 }: PipeWeightInputs): number {
-  const outerRadiusM = (outerDiameterMm / 1000) / 2;
-  const innerRadiusM = outerRadiusM - thicknessMm / 1000;
-  const lengthM = lengthMm / 1000;
+  const outerRadiusM = mmToM(outerDiameterMm) / 2;
+  const innerRadiusM = outerRadiusM - mmToM(thicknessMm);
+  const lengthM = mmToM(lengthMm);
   const volumeM3 = Math.PI * (outerRadiusM ** 2 - innerRadiusM ** 2) * lengthM;
 
   return volumeM3 * densityKgM3;

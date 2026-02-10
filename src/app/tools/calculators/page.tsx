@@ -2,9 +2,9 @@ import SectionCard from "@/components/SectionCard";
 
 const calculators = [
   {
-    title: "Pipe/Tube Weight",
-    description: "Estimate total cut weight and kg per meter for tubes.",
-    href: "/tools/pipe-weight"
+    title: "Plate Weight",
+    description: "Estimate weight from plate dimensions and density.",
+    href: "/tools/plate-weight"
   },
   {
     title: "Round Bar Weight",
@@ -12,9 +12,9 @@ const calculators = [
     href: "/tools/round-bar-weight"
   },
   {
-    title: "Plate Weight",
-    description: "Estimate weight from plate dimensions and density.",
-    href: "/tools/plate-weight"
+    title: "Pipe/Tube Weight",
+    description: "Estimate total cut weight and kg per meter for tubes.",
+    href: "/tools/pipe-weight"
   },
   {
     title: "Machining Cycle Estimator",
