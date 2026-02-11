@@ -1,0 +1,184 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useState } from "react";
+
+import { calculatePipeKgPerMeter, calculatePipeWeightKg } from "@/lib/calculators/weight";
+
+type FieldKey = "outerDiameterMm" | "thicknessMm" | "lengthMm" | "densityKgM3";
+
+const defaultValues = {
+  outerDiameterMm: "60.3",
+  thicknessMm: "3.91",
+  lengthMm: "1000",
+  densityKgM3: "7850"
+};
+
+function validatePositive(value: string) {
+  if (!value.trim()) {
+    return "Required.";
+  }
+
+  const numeric = Number(value);
+  if (Number.isNaN(numeric)) {
+    return "Enter a valid number.";
+  }
+  if (numeric <= 0) {
+    return "Must be greater than zero.";
+  }
+
+  return "";
+}
+
+export default function PipeWeightPage() {
+  const [values, setValues] = useState(defaultValues);
+
+  const errors = useMemo(() => {
+    const outerDiameterError = validatePositive(values.outerDiameterMm);
+    const thicknessError = validatePositive(values.thicknessMm);
+
+    let geometryError = "";
+    if (!outerDiameterError && !thicknessError) {
+      const outerDiameterMm = Number(values.outerDiameterMm);
+      const thicknessMm = Number(values.thicknessMm);
+      if (thicknessMm >= outerDiameterMm / 2) {
+        geometryError = "Thickness must be less than outer diameter / 2.";
+      }
+    }
+
+    return {
+      outerDiameterMm: outerDiameterError,
+      thicknessMm: thicknessError || geometryError,
+      lengthMm: validatePositive(values.lengthMm),
+      densityKgM3: validatePositive(values.densityKgM3)
+    };
+  }, [values]);
+
+  const hasErrors = Object.values(errors).some(Boolean);
+
+  const results = useMemo(() => {
+    if (hasErrors) {
+      return null;
+    }
+
+    const outerDiameterMm = Number(values.outerDiameterMm);
+    const thicknessMm = Number(values.thicknessMm);
+    const lengthMm = Number(values.lengthMm);
+    const densityKgM3 = Number(values.densityKgM3);
+
+    return {
+      weightKg: calculatePipeWeightKg({
+        outerDiameterMm,
+        thicknessMm,
+        lengthMm,
+        densityKgM3
+      }),
+      kgPerMeter: calculatePipeKgPerMeter({
+        outerDiameterMm,
+        thicknessMm,
+        densityKgM3
+      })
+    };
+  }, [hasErrors, values]);
+
+  const handleChange =
+    (key: FieldKey) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues((prev) => ({
+        ...prev,
+        [key]: event.target.value
+      }));
+    };
+
+  return (
+    <main>
+      <nav style={{ marginBottom: "12px" }}>
+        <Link href="/tools" style={{ color: "var(--muted)", textDecoration: "none" }}>
+          ← Back to Tools
+        </Link>
+      </nav>
+
+      <section style={{ marginBottom: "24px" }}>
+        <h1 style={{ fontSize: "2rem", marginBottom: "8px" }}>
+          Pipe/Tube Weight Calculator
+        </h1>
+        <p style={{ color: "var(--muted)", maxWidth: "680px" }}>
+          Estimate pipe or tube weight from outer diameter, wall thickness,
+          length, and material density.
+        </p>
+      </section>
+
+      <section
+        style={{
+          display: "grid",
+          gap: "16px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+          marginBottom: "24px"
+        }}
+      >
+        {([
+          {
+            key: "outerDiameterMm",
+            label: "Outer diameter (mm)"
+          },
+          {
+            key: "thicknessMm",
+            label: "Thickness (mm)"
+          },
+          {
+            key: "lengthMm",
+            label: "Length (mm)"
+          },
+          {
+            key: "densityKgM3",
+            label: "Density (kg/m³)"
+          }
+        ] as const).map((field) => (
+          <label key={field.key} style={{ display: "grid", gap: "6px" }}>
+            <span style={{ fontWeight: 600 }}>{field.label}</span>
+            <input
+              type="number"
+              inputMode="decimal"
+              value={values[field.key]}
+              onChange={handleChange(field.key)}
+              style={{
+                borderRadius: "8px",
+                border: "1px solid var(--border)",
+                padding: "10px 12px",
+                background: "transparent",
+                color: "inherit"
+              }}
+              min="0"
+              step="any"
+            />
+            {errors[field.key] ? (
+              <span style={{ color: "var(--accent)", fontSize: "0.85rem" }}>
+                {errors[field.key]}
+              </span>
+            ) : null}
+          </label>
+        ))}
+      </section>
+
+      <section
+        style={{
+          border: "1px solid var(--border)",
+          borderRadius: "16px",
+          padding: "20px",
+          background: "var(--panel)"
+        }}
+      >
+        <h2 style={{ marginBottom: "8px" }}>Estimated Results</h2>
+        <p style={{ fontSize: "1.5rem", fontWeight: 600, marginBottom: "8px" }}>
+          Weight: {results === null ? "--" : `${results.weightKg.toFixed(2)} kg`}
+        </p>
+        <p style={{ marginBottom: "10px" }}>
+          kg per meter: {results === null ? "--" : `${results.kgPerMeter.toFixed(3)} kg/m`}
+        </p>
+        <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>
+          This calculator provides an estimate. Actual weight can vary due to
+          manufacturing tolerances and material specifications.
+        </p>
+      </section>
+    </main>
+  );
+}
