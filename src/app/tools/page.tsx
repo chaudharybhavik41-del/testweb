@@ -1,23 +1,16 @@
 import SectionCard from "@/components/SectionCard";
 import { calculators } from "@/lib/calculators/catalog";
 
-export default function CalculatorsPage() {
+export default function ToolsPage() {
   return (
     <main>
-      <nav style={{ marginBottom: "12px" }}>
-        <Link href="/tools" style={{ color: "var(--muted)", textDecoration: "none" }}>
-          ← Back to Tools
-        </Link>
-      </nav>
       <section style={{ marginBottom: "32px" }}>
-        <h1 style={{ fontSize: "2rem", marginBottom: "8px" }}>
-          Tools & Calculators
-        </h1>
-        <p style={{ color: "var(--muted)", maxWidth: "640px" }}>
-          Public-ready calculators for quoting, machining, and production
-          planning. Replace these placeholders with live tools as you build them.
+        <h1 style={{ fontSize: "2rem", marginBottom: "8px" }}>Tools</h1>
+        <p style={{ color: "var(--muted)", maxWidth: "680px" }}>
+          Quick calculators for common fabrication and manufacturing weight estimates.
         </p>
       </section>
+
       <section
         style={{
           display: "grid",
