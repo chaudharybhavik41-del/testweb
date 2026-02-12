@@ -60,17 +60,20 @@ const defaultState: PlateState = {
   ratePerKg: ""
 };
 
-function toNumber(value: string) {
+function toPositiveNumber(value: string) {
   const n = Number(value);
-  return Number.isFinite(n) ? n : 0;
+  if (!Number.isFinite(n) || n <= 0) {
+    return 0;
+  }
+  return n;
 }
 
 function rowWeightPerPc(row: Row) {
   return calculatePlateWeightKg({
-    lengthMm: toNumber(row.lengthMm),
-    widthMm: toNumber(row.widthMm),
-    thicknessMm: toNumber(row.thicknessMm),
-    densityKgM3: toNumber(row.densityKgM3)
+    lengthMm: toPositiveNumber(row.lengthMm),
+    widthMm: toPositiveNumber(row.widthMm),
+    thicknessMm: toPositiveNumber(row.thicknessMm),
+    densityKgM3: toPositiveNumber(row.densityKgM3)
   });
 }
 
@@ -86,7 +89,7 @@ export default function PlateWeightPage() {
   const computedRows = useMemo(() => {
     return rows.map((row) => {
       const weightPerPc = rowWeightPerPc(row);
-      const qty = toNumber(row.qty);
+      const qty = toPositiveNumber(row.qty);
       const lineTotalKg = weightPerPc * qty;
       return { row, weightPerPc, lineTotalKg };
     });
@@ -98,13 +101,13 @@ export default function PlateWeightPage() {
   const groupedByThickness = useMemo(() => {
     const map = new Map<number, number>();
     for (const r of computedRows) {
-      const thk = toNumber(r.row.thicknessMm);
+      const thk = toPositiveNumber(r.row.thicknessMm);
       map.set(thk, (map.get(thk) ?? 0) + r.lineTotalKg);
     }
     return Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
   }, [computedRows]);
 
-  const estimatedTotalCost = isPremium ? grandTotalKg * toNumber(state.ratePerKg) : null;
+  const estimatedTotalCost = isPremium ? grandTotalKg * toPositiveNumber(state.ratePerKg) : null;
 
   const updateRow = (id: string, patch: Partial<Row>) => {
     setState({
@@ -204,6 +207,8 @@ export default function PlateWeightPage() {
               <input
                 disabled={!isPremium}
                 type={key === "ratePerKg" ? "number" : key === "date" ? "date" : "text"}
+                min={key === "ratePerKg" ? "0" : undefined}
+                step={key === "ratePerKg" ? "any" : undefined}
                 value={state[key]}
                 onChange={(e) => setState({ ...state, [key]: e.target.value })}
                 style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "8px" }}
@@ -224,7 +229,7 @@ export default function PlateWeightPage() {
           </thead>
           <tbody>
             {computedRows.map(({ row, weightPerPc, lineTotalKg }) => {
-              const lineCost = toNumber(state.ratePerKg) * lineTotalKg;
+              const lineCost = toPositiveNumber(state.ratePerKg) * lineTotalKg;
 
               return (
                 <tr key={row.id}>
@@ -258,6 +263,8 @@ export default function PlateWeightPage() {
                       value={row.densityKgM3}
                       disabled={row.materialPreset !== "Custom"}
                       onChange={(e) => updateRow(row.id, { densityKgM3: e.target.value })}
+                      min="0"
+                      step="any"
                       style={{ width: "100%" }}
                     />
                   </td>
@@ -272,6 +279,8 @@ export default function PlateWeightPage() {
                         type="number"
                         value={row[key]}
                         onChange={(e) => updateRow(row.id, { [key]: e.target.value })}
+                        min="0"
+                        step="any"
                         style={{ width: "100%" }}
                       />
                     </td>

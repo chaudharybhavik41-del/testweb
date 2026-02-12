@@ -29,32 +29,39 @@ type PlateState = {
 };
 
 const STORAGE_KEY = "mmtk:plate-weight:v1";
+const initialPrintState: PlateState = {
+  rows: [],
+  companyName: "",
+  date: "",
+  projectName: "",
+  materialGrade: "",
+  ratePerKg: ""
+};
 
-function toNumber(value: string) {
+function toPositiveNumber(value: string) {
   const n = Number(value);
-  return Number.isFinite(n) ? n : 0;
+  if (!Number.isFinite(n) || n <= 0) {
+    return 0;
+  }
+  return n;
 }
 
 export default function PlateWeightPrintPage() {
   const { isPremium } = getPlan();
-  const { state, hydrated } = useLocalStorageState<PlateState>(STORAGE_KEY, {
-    rows: [],
-    companyName: "",
-    date: "",
-    projectName: "",
-    materialGrade: "",
-    ratePerKg: ""
-  });
+  const { state, hydrated } = useLocalStorageState<PlateState>(
+    STORAGE_KEY,
+    initialPrintState
+  );
 
   const rows = useMemo(() => {
     return state.rows.map((row) => {
       const weightPerPc = calculatePlateWeightKg({
-        lengthMm: toNumber(row.lengthMm),
-        widthMm: toNumber(row.widthMm),
-        thicknessMm: toNumber(row.thicknessMm),
-        densityKgM3: toNumber(row.densityKgM3)
+        lengthMm: toPositiveNumber(row.lengthMm),
+        widthMm: toPositiveNumber(row.widthMm),
+        thicknessMm: toPositiveNumber(row.thicknessMm),
+        densityKgM3: toPositiveNumber(row.densityKgM3)
       });
-      const lineTotal = weightPerPc * toNumber(row.qty);
+      const lineTotal = weightPerPc * toPositiveNumber(row.qty);
       return { ...row, weightPerPc, lineTotal };
     });
   }, [state.rows]);
