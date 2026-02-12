@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import SectionCard from "@/components/SectionCard";
 import { calculators } from "@/lib/calculators/catalog";
 

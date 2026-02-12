@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import {
@@ -77,12 +76,6 @@ export default function RoundBarWeightPage() {
 
   return (
     <main>
-      <nav style={{ marginBottom: "12px" }}>
-        <Link href="/tools" style={{ color: "var(--muted)", textDecoration: "none" }}>
-          ← Back to Tools
-        </Link>
-      </nav>
-
       <section style={{ marginBottom: "24px" }}>
         <h1 style={{ fontSize: "2rem", marginBottom: "8px" }}>
           Round Bar Weight Calculator

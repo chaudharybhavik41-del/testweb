@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { calculatePipeKgPerMeter, calculatePipeWeightKg } from "@/lib/calculators/weight";
@@ -91,12 +90,6 @@ export default function PipeWeightPage() {
 
   return (
     <main>
-      <nav style={{ marginBottom: "12px" }}>
-        <Link href="/tools" style={{ color: "var(--muted)", textDecoration: "none" }}>
-          ← Back to Tools
-        </Link>
-      </nav>
-
       <section style={{ marginBottom: "24px" }}>
         <h1 style={{ fontSize: "2rem", marginBottom: "8px" }}>
           Pipe/Tube Weight Calculator
